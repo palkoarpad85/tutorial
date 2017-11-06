@@ -46,6 +46,7 @@ class UsersTable extends Table
             'targetForeignKey' => 'role_id',
             'joinTable' => 'roles_users'
         ]);
+
     }
 
     /**
@@ -107,14 +108,20 @@ class UsersTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->isUnique(['email']));
-
         return $rules;
 }
     public function findAuth(\Cake\ORM\Query $query, array $options)
     {
       $query->contain(['Roles'])
             ->where(['Users.active'=>true]);
-
           return $query;
     }
+
+    public function findRoles(\Cake\ORM\Query $query, array $options){
+          $user_id=$options['users'];
+          $query->contain(['Roles'])
+                ->where(['Users.id'=>$user_id["id"]])
+                ->where(['Users.active'=>true]);
+              return $query;
+      }
 }

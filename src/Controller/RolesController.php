@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use Cake\ORM\TableRegistry;
 /**
  * Roles Controller
  *
@@ -110,4 +110,27 @@ class RolesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function isAuthorized($user){
+       $acces;
+       $viewAccess = TableRegistry::get('ViewAccess');
+
+    foreach ($user["roles"] as  $role) {
+               if ($role["id"]==2) {
+                 return parent::isAuthorized($user);
+               }
+               else{
+                 $acces=$viewAccess->find('Access',['role'=>$role['id']])->select(['view_name','controller_name'])->toArray();
+                  foreach ($acces as  $value) {
+                    if ($value['controller_name']=="Roles"){
+                      if (in_array($this->request->action, [$value['view_name']]) ||$this->request->action=="login") {
+                             return true;
+                        }
+                      }
+                    }
+                return parent::isAuthorized($user);
+                  }
+
+          }
+      }
 }

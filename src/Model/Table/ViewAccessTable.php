@@ -40,6 +40,14 @@ class ViewAccessTable extends Table
             'foreignKey' => 'role_id',
             'joinType' => 'INNER'
         ]);
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'targetForeignKey' => 'user_id',
+            'joinTable' => 'Roles'
+        ]);
+
+
+
     }
 
     /**
@@ -78,4 +86,11 @@ class ViewAccessTable extends Table
 
         return $rules;
     }
+
+    public function findAccess(\Cake\ORM\Query $query, array $options){
+          $role_id=$options['role'];
+          $query->
+          where(['role_id' => $role_id]);
+          return $query;
+        }
 }

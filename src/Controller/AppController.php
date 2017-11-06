@@ -57,7 +57,7 @@ class AppController extends Controller
               'controller'=> 'Users',
               'action'=>'login'
             ],
-            'authError'=>'Error not login',
+            'authError'=> 'Nincs jogosultsagod az oldal megtekintéséhez' ,
             'loginRedirect'=>[
               'controller'=> 'Users',//ide ugrik ha bejelentkezett
               'action'=>'home'
@@ -101,13 +101,12 @@ class AppController extends Controller
     public function isAuthorized($user)
     {
      foreach ($user["roles"] as  $role) {
-        if ($role["id"]==1) {
+        if ($role["id"]==2) {
             return true;
         }
         else {
           return false;
         }
      }
-
-}
+   }
 }

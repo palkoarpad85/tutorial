@@ -142,48 +142,28 @@ class UsersController extends AppController
           return $this->redirect($this->Auth->logout());
         }
 
-    public function isAuthorized($user){
-  $roles="'";
-      foreach ($user["roles"] as  $role) {
-      $roles.=$role["id"]."','";
-      }
-$roles = substr($roles, 0,-2);
+  public function isAuthorized($user){
+     $acces;
+     $viewAccess = TableRegistry::get('ViewAccess');
 
-
-      $viewAccess = TableRegistry::get('ViewAccess');
-        $query = $viewAccess
-              ->find()
-              ->select(['id','view_name'])
-              ->where(function ($exp, $q) {
-        return $exp->in('role_id', $this->roles);})
-              ->where(['controller_name' => 'Users'])
-              ->toArray();
-  debug($this->roles);
-              foreach ($query as $article) {
-                debug($article->view_name);
-              }
-
-          foreach ($user["roles"] as  $role) {
-
-             if ($role["id"]==1) {
+  foreach ($user["roles"] as  $role) {
+             if ($role["id"]==2) {
                return parent::isAuthorized($user);
              }
              else{
-return true;
-/*foreach ($this->$current_roles as  $value) {
+               $acces=$viewAccess->find('Access',['role'=>$role['id']])->select(['view_name','controller_name'])->toArray();
+                foreach ($acces as  $value) {
+                  if ($value['controller_name']=="Users"){
+                    if (in_array($this->request->action, [$value['view_name']]) ||$this->request->action=="login") {
+                           return true;
+                      }
+                    }
+                  }
+              return parent::isAuthorized($user);
+                }
 
-                 if ($value["controller_name"]=="Users") {
-                   array_push($roles,$value["view_name"]);
-                   if (in_array($this->request->action,$roles)) {
-                      return true;
-                   }
-                 }
-
-               }*/
-               }
-            }
-
-}
+        }
+    }
 
     public function home()
     {
